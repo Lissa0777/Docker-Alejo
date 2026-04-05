@@ -101,7 +101,7 @@ export default function App() {
               <li key={u.id} style={S.item}>
                 <div style={S.avatar}>{u.nombre.charAt(0).toUpperCase()}</div>
                 <span style={S.name}>{u.nombre}</span>
-                <span style={S.id}>#{u.id}</span>
+                <span style={S.id}>#{usuarios.indexOf(u) + 1}</span>
                 <button style={S.del} onClick={() => eliminar(u.id, u.nombre)} title="Eliminar">🗑️</button>
               </li>
             ))}
