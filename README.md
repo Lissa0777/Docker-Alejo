@@ -1,4 +1,4 @@
-# Aplicación Web Completa con Docker
+# Aplicación Web con Docker
 
 Aplicación de gestión de usuarios compuesta por tres servicios dockerizados: frontend en React, backend en Node.js + Express, y base de datos MySQL.
 

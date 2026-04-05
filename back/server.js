@@ -25,12 +25,9 @@ function connectWithRetry() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         nombre VARCHAR(100) NOT NULL
       )`, () => {
-        db.query(`INSERT INTO usuarios (nombre)
-          SELECT 'Ana García' WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE nombre='Ana García')`, () => {});
-        db.query(`INSERT INTO usuarios (nombre)
-          SELECT 'Carlos López' WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE nombre='Carlos López')`, () => {});
-        db.query(`INSERT INTO usuarios (nombre)
-          SELECT 'Laura Martínez' WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE nombre='Laura Martínez')`, () => {});
+        db.query(`INSERT INTO usuarios (nombre) SELECT 'Ana García' WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE nombre='Ana García')`, () => {});
+        db.query(`INSERT INTO usuarios (nombre) SELECT 'Carlos López' WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE nombre='Carlos López')`, () => {});
+        db.query(`INSERT INTO usuarios (nombre) SELECT 'Laura Martínez' WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE nombre='Laura Martínez')`, () => {});
       });
     }
   });
@@ -39,11 +36,24 @@ connectWithRetry();
 
 app.get("/api/usuarios", (req, res) => {
   db.query("SELECT * FROM usuarios", (err, result) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-    } else {
-      res.json(result);
-    }
+    if (err) res.status(500).json({ error: err.message });
+    else res.json(result);
+  });
+});
+
+app.post("/api/usuarios", (req, res) => {
+  const { nombre } = req.body;
+  if (!nombre) return res.status(400).json({ error: "Nombre requerido" });
+  db.query("INSERT INTO usuarios (nombre) VALUES (?)", [nombre], (err, result) => {
+    if (err) res.status(500).json({ error: err.message });
+    else res.json({ id: result.insertId, nombre });
+  });
+});
+
+app.delete("/api/usuarios/:id", (req, res) => {
+  db.query("DELETE FROM usuarios WHERE id = ?", [req.params.id], (err) => {
+    if (err) res.status(500).json({ error: err.message });
+    else res.json({ message: "Usuario eliminado" });
   });
 });
 
